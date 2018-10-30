@@ -1,0 +1,75 @@
+#import serial
+import json
+#import requests
+import socket
+from ftplib import FTP
+from pprint import pprint
+#import pyowm
+import urllib.request
+from html.parser import HTMLParser
+from html.entities import name2codepoint
+
+
+dataList = []
+class MyHTMLParser(HTMLParser):
+        
+    def handle_starttag(self, tag, attrs):
+        print("Start tag:", tag)
+        for attr in attrs:
+            print("     attr:", attr)
+
+    def handle_endtag(self, tag):
+        print("End tag  :", tag)
+
+    def handle_data(self, data):
+        print("Data     :", data)
+        dataList.append(data)
+
+    def handle_comment(self, data):
+        print("Comment  :", data)
+
+    def handle_entityref(self, name):
+        c = chr(name2codepoint[name])
+        print("Named ent:", c)
+
+    def handle_charref(self, name):
+        if name.startswith('x'):
+            c = chr(int(name[1:], 16))
+        else:
+            c = chr(int(name))
+        print("Num ent  :", c)
+
+    def handle_decl(self, data):
+        print("Decl     :", data)
+
+class ArduinoPortal:
+
+    #req = requests.get('http://api.openweathermap.org/data/2.5/forecast?id=524901&APPID=d2669a720677f99ab5ac96c0dca9a399')
+    #apiData = json.loads(req)
+    #pprint(req.json())
+    #ser = serial.Serial('COM5', 9600, timeout=10)
+    #print(ser.name)
+    #arduinoData = ser.readLine()
+    #ser.close()
+
+    #ftp = FTP('smart-irrigation.site')
+    #try:
+        #print('Logging In...')
+        #ftp.login('arduino@smart-irrigation.site', 'jD3isqixviHr')
+    #except:
+     #   print('Failed to login')
+    #ftp.retrlines('LIST')
+    #file = open('text.json', 'rb')
+    #ftp.storbinary('STOR text.json', file)
+    #ftp.retrlines('LIST')
+    #ftp.quit()
+
+
+    contents = urllib.request.urlopen("http://172.20.10.3").read()
+    print("Pre Parser: ",contents)
+    f= open("temp.txt","w+")
+    f.write(str(contents))
+    parser = MyHTMLParser()
+    parser.feed(str(contents))
+    print(str(dataList))
+    print(dataList[3])
